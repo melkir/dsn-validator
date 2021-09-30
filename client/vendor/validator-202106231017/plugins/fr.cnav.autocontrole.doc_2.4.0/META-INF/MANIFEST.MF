@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: fr.cnav.autocontrole.doc
+Bundle-SymbolicName: fr.cnav.autocontrole.doc
+Require-Bundle: org.eclipse.core.runtime
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: CNAV
+Export-Package: fr.cnav.autocontrole.doc
+Bundle-Name: Doc
+Bundle-Version: 2.4.0
+Bundle-ClassPath: help/,icons/,.
+Bundle-Activator: fr.cnav.autocontrole.doc.Activator
+Build-Jdk-Spec: 1.8
+Created-By: Maven Archiver 3.5.0
+Eclipse-BundleShape: dir
+

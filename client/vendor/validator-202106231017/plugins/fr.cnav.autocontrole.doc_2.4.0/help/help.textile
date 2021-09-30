@@ -1,0 +1,355 @@
+"<< Retour à l'index ":./index.html
+
+h1. Aide de l'application Auto-contrôle
+
+L'application Auto-contrôle permet de contrôler que des envois d'une norme d'échange et vérifier qu'ils sont conformes relativement à la version installée sur l'application. Pour illustrer les fonctionnalités d'Auto-contrôle, nous prendrons des exemples de la norme DSN qui utilise toutes les fonctionnalités de cette application.
+
+Les exemples de l'Auto-contrôle illustrés dans ce document ont été créés à partir de l'Auto-contrôle une norme d'échange DSN (l'outil s'appelle alors DSN-VAL). 
+
+h2. Sommaire
+
+{toc:style=disc|minLevel=2|maxLevel=5}
+
+h2. Pré-requis
+
+Pour pouvoir lancer l'application en mode graphique il est nécessaire que la machine virtuelle Java utilisée par le système par défaut corresponde à l'architecture du package d'Autocontrole utilisé. Dans le cas contraire, un message d'erreur s'affichera au lancement indiquant qu'il manque une librairie.
+
+* Si le package téléchargé utilise l'architecture x86, il faut que la machine virtuelle Java par défaut ai une architecture 32bit.
+* Si le package téléchargé utilise l'architecture x86_64, il faut que la machine virtuelle Java par défaut ai une architecture 64bit.
+
+Si vous avez installé plusieurs machines virtuelles Java avec différentes architectures, vous pouvez sélectionner celle à utiliser par défaut de la manière suivante :
+
+Pour Windows : 
+* Aller dans le panneau de configuration puis sur système. 
+* Cliquez sur "paramètres avancés" puis cliquer sur "variables d'environnement". 
+* Créez une nouvelle variable système "JAVA_HOME" ou modifiez la si elle existe déjà. 
+* Renseigner le chemin vers le répertoire où est installé le Java à utiliser. Ex "C:\Program Files\Java\jre8".
+* Modifier la variable système "Path". Ajoutez au tout début "%JAVA_HOME%\bin;". Si l'ajout est fait à la fin, cela ne marchera pas. 
+* Appliquer les changements et redémarrer l'application.
+
+Pour Linux : 
+* Ouvrir le fichier caché ".bashrc" à la racine de votre répertoire utilisateur. 
+* Ajoutez à la fin la variable JAVA_HOME qui pointe sur le chemin de la machine virtuelle Java à utiliser et exportez la variable. Ex : "JAVA_HOME=/usr/lib/jvm/java-8-oracle export JAVA_HOME"
+
+h2. Organisation et fonctionnalités
+
+L'application Auto-contrôle possède une fenêtre principale contenant l'ensemble des outils permettant d'accéder aux fonctionnalités de l'application ainsi qu'à un ensemble de vues.
+Voici la fenêtre principale :
+
+	!{width:70%}images/FenetrePrincipale.png! 
+
+A partir de celle-ci, différentes vues sont accessibles :
+* la vue *Norme* permettant de naviguer dans la norme : c'est une arborescence des rubriques de la norme en cours d'utilisation. Dans l'exemple suivant, on voit les blocs et les rubriques de la norme DSN.
+
+	!{width:70%}images/VueNorme.png! 
+	
+* la vue *Individu* permettant de visualiser la partie du message contrôlé relative à un élément de la norme qui représente un individu. Dans l'exemple suivant, l'élément qui représente un individu pour la norme DSN est le Salarié. Pour chaque norme, la vue aura le nom de l'élément qui représente un individu et contiendra les informations de cet élément. Ici, on voit les blocs et les rubriques contenus par les salariés de la norme DSN.
+
+	!{width:70%}images/VueSalarie.png! 
+	
+* la page d'*aide* qui permet de visualiser cette documentation. Cette page montre l'aide fournie par la norme si celle-ci existe. La documentation que vous lisez actuellement est celle par défaut. Cela signifie que la norme que vous utilisez actuellement ne fournit pas de documentation utilisateur spécifique.
+
+h3. La disposition des vues
+
+Les vues peuvent être disposées selon l'humeur de l'utilisateur. Une des dispositions possibles consiste à les mettre côte à côte à l'intérieur de la fenêtre principale. Par exemple, une à gauche et une à droite :
+
+	!{width:70%}images/VuesCoteACoteGD.png! 
+
+ou bien une en haut et une en bas :
+
+	!{width:70%}images/VuesCoteACoteHB.png! 
+
+On a également la possibilité de "sortir" une vue de la fenêtre principale.
+
+	!{width:70%}images/VuesExterieur.png!
+
+Pour faire ceci, il suffit de sélectionner une vue et de la glisser/déposer à l'endroit souhaité. Une forme rectangulaire de pré-affichage se dessine alors aux endroits dans lesquels la vue peut se déplacer. Par exemple, sur la figure ci-dessous, vous retrouverez le pré-affichage lorsque l'on a glissé la vue norme sur la partie droite.
+
+	!{width:70%}images/VuesPreAffichage.png!
+
+Bien sûr, chaque vue peut retrouver sa position initale en effectuant le processus inverse.
+
+Il existe aussi la possibilité de minimiser et maximiser les vues avec les icônes !../icons/min_view.gif! et !../icons/maximize.gif! situés en haut à droite de la vue principale.
+
+	!=images/OptionsVues.png!
+
+h3. La fenêtre principale
+
+La fenêtre principale se décompose en trois parties :
+* Un *titre* contenant la description de la base de connaissances utilisée par la norme en cours d'utilisation préfixé par "Version". Dans l'exemple suivant, la norme DSN utilisée intègre la base de connaissance de description "Declaration Social Nominative".
+* Une *barre d'outils* contenant les actions disponibles sur Auto-contrôle.
+* La *vue principale* permettant de naviguer parmi les anomalies. Cette vue affiche également les informations synthétiques de chaque anomalie fournies par la validation du message courant respectant la norme installée.
+
+	!{width:60%}images/FenetrePrincipale2.png!  
+
+h4. La barre d'outils et les actions
+
+Voici la liste des actions disponibles à partir de la barre d'outils :
+
+* !../icons/open32.png! **Choisir un fichier et lancer le contrôle** : cette action ouvre une fenêtre de sélection permettant de sélectionner un message de la norme à valider. Suivant les extensions acceptées et spécifiées dans la base de connaissance de la norme, cela peut être directement le message dans son format original ou bien un message au format XML. Il est également possible d'avoir un zip contenant le message quelque soit son format. 
+!{width:50%}images/ouvertureMessage.png!  
+
+L'outil ne fonctionne qu'avec un zip contenant un seul fichier.
+Une fois la ressource sélectionnée, le contrôle est lancé et le résultat est affiché dans la vue principale.
+Une barre de progression s'affiche durant toute la durée du contrôle.
+
+* !../icons/run32.png! **Contrôle du fichier courant** : cette action est disponible uniquement si un fichier est déjà contrôlé, dans le cas contraire il faut utiliser l'action "Ouvrir un fichier". Une barre de progression s'affiche durant toute la durée du contrôle. Si vous cliquez sur l'icône sans avoir au préalable ouvert un fichier, une fenêtre de dialogue s'ouvrira en vous indiquant une erreur.
+
+* !../icons/norme32.png! **Ouverture de la vue norme** : cette action ouvre la vue Norme. Cette vue affiche l'arborescence des blocs et rubriques de la norme. Elle est disponible à tout moment.
+
+* !../icons/export32.png! **Export du bilan** : cette action permet d'enregistrer le bilan de validation sous un des formats proposés par la norme utilisée dans l'application. Par défaut, l'enregistrement se fait à côté du message d'entrée.
+
+* !../icons/config32.png! **Modifier les paramètres** : cette action ouvre la page de préférences sur laquelle l'utilisateur peut modifier le nombre maximum d'anomalies que l'on veut signaler dans le bilan de validation. Par défaut, ce nombre est à 200. On peut également choisir le niveau de mutualisation des anomalies et activer la mise à jours de la norme au démaraage.
+
+* !../icons/update32.png! **Mise à jours de l'application** : cette action permet de vérifier si une mise à jour de la norme utilisée est disponible. Si c'est le cas, l'utilisateur peut alors décider de l'installer.
+
+* !../icons/help32.png! **Ouverture de l'aide** : cette action ouvre cette page dans laquelle vous retrouvez une documentation de l'application AutoContrôle.
+
+* !../icons/exit32.png! **Sortie** : cette action permet de quitter l'application (on peut également utiliser la croix en haut à droite de l'outil).
+
+h4. La vue principale
+
+La vue principale offre une visualisation du résultat du contrôle lancé sur le message courant. Cette affichage nous permet de naviguer parmi les anomalies et de visualiser les informations synthétiques de chacune d'entre elles.
+Cette vue se décompose en trois parties :
+* l'entête appelé "Résumé",
+* la table des anomalies appelé "Anomalies",
+* la partie détail appelé "Détail de l'anomalie".
+
+h4. L'entête
+
+L'entête résume les informations retournées par le contrôle du message courant. On retrouve donc :
+* le nombre d'erreurs détectées, réparties en deux catégories : anomalies bloquantes et anomalies non bloquantes,
+* la localisation du message courant de la norme sur lequel s'est éffectué le contrôle,
+* la taille du message contrôlé en octets, son nombre de lignes et d'individus détectés
+ (dans l'exemple ci-dessous, la norme utilisée étant la DSN, c'est le nombre de salariés qui est affiché car les salariés correspondent au concept d'individu),
+* le nombre de déclarations totales, valides et non valides.
+
+!{width:70%}images/VuePrincipaleEntete.png! 
+
+h4. La table des anomalies
+
+Elle contient la liste des anomalies détectées lors du contrôle du message courant. Dans les colonnes, on retrouve pour chaque anomalie :
+* son type : bloquant (icône croix rouge) ou non bloquant (icône triangle jaune),
+* le rang de sa déclaration,
+* son rang,
+* le nombre d'anomalie,
+* sa ligne,
+* le code de la rubrique concernée, son libellé et sa valeur,
+* son code et message.
+
+!{width:70%}images/VuePrincipaleTable.png!
+
+Toutes les colonnes sont retaillables et triables par ordre croissant et décroissant par rapport à leur contenu.
+
+!{width:70%}images/VuePrincipaleTri.png!
+
+Cette table contient aussi un champ de recherche qui permet de filtrer les anomalies à afficher. On peut par exemple filtrer les anomalies sur le nom de la rubrique ou encore la ligne, etc.
+Il est à noter que ce champ de recherche ne supporte pas les caractères joker comme "*".
+Voici un exemple en filtrant sur "S21.G00.06" :
+
+!{width:70%}images/VuePrincipaleRecherche.png!
+
+La table des anomalies et la section "Détail de l'anomalie" sont retaillables en hauteur. Pour cela, il suffit de se positionner sur la "ligne" séparant les deux parties (encadrée en rouge dans la figure ci-dessous) et de la glisser/déposer à l'endroit souhaité.
+
+!{width:70%}images/VuePrincipaleRetail.png!
+
+Sur les éléments de la colonne "Rubrique", il est possible de faire afficher une info-bulle récapitulant les informations de la rubrique en laissant la souris dessus quelques instants.
+
+!{width:70%}images/VuePrincipaleTooltip.png!
+
+Il est à noter que des infos-bulles sont disponibles sur chaque cellule tronquée pour permettre d'avoir le contenu entier de la cellule.
+
+h4. Les détails de l'anomalie
+
+Cette section récapitule la description et les valeurs de l'anomalie sélectionnée dans la table. 
+
+!{width:70%}images/VuePrincipaleDetail.png!
+
+Le contenu de cette section peut être copié/collé, soit avec le menu contextuel du clic droit soit avec les raccourcis clavier habituels.
+
+!{width:70%}images/VuePrincipaleDetailCC.png!
+
+Rappelons que la table des anomalies et la section "Détail de l'anomalie" sont retaillables en hauteur, pour plus de détail l'utilisateur peut se référer au paragraphe précédent.
+
+h4. Les actions
+
+Depuis une anomalie de la table, le menu contextuel du clic droit permet deux actions :
+* ouvrir la vue *Norme* !../icons/norme.png!. Cette action est disponible sur tous les types d'anomalies et a le même comportement que l'action de la barre d'outils. Dès lors que l'utilisateur choisit cette action, la vue Norme s'ouvre en sélectionnant la rubrique liée à l'anomalie.
+* ouvrir la vue *Individu* !../icons/salarie.png!. Cette action est uniquement disponible sur des anomalies dont les rubriques sont liées à un individu et ouvre la vue individu correspondant à la norme utilisée. De nouveau, la vue individu s'ouvre en sélectionnant la rubrique liée à l'anomalie. 
+
+Dans l'exemple ci-dessous, on retrouve seulement la première action disponible dans le premier encadré car l'anomalie concerne une rubrique du bloc envoi. Dans le second encadré, on retrouve les deux actions car l'anomalie référence un individu. Notons que c'est la vue salarié qui est ouvert car on est positionné sur une norme DSN.
+
+!{width:70%}images/VuePrincipaleAction.png!
+
+h3. La vue Norme
+
+La vue Norme permet de naviguer dans l'ensemble des blocs et rubriques de la norme : elle est représentée sous forme arborescente.
+
+Elle se décompose en deux parties :
+* l'arborescence des blocs et rubriques,
+* la partie détail.
+
+h4. L'arborescence des blocs et rubriques
+
+Cette partie représente l’arborescence des blocs et rubriques de la norme.
+
+Elle contient aussi un champ de recherche qui permet de filtrer les éléments de la norme à afficher. Les caractères joker comme "*" sont supportés par ce champs de recherche. On peut par exemple de choisir de filtrer les éléments sur leur identifiant ou encore sur un mot de leur label..
+
+Voici un exemple de filtre sur "siège :"
+
+!{width:70%}images/VueNormeRecherche.png!
+
+Le champ de recherche bénéficie d'une "gomme" pour effacer tout le contenu de la recherche.
+
+!{width:70%}images/VueNormeGomme.png!
+
+L'arborescence et la section détail sont retaillables en hauteur. Pour cela, il suffit de se positionner sur la "ligne" séparant les deux parties (encadrée en rouge dans la figure ci-dessous) et de la glisser/déposer à l'endroit souhaité.
+
+!{width:70%}images/VueNormeRetail.png!
+
+h4. Les détails du bloc ou de la rubrique
+
+Cette section récapitule la description et les valeurs des rubriques ou blocs sélectionnés dans la table.
+
+!{width:70%}images/VueNormeDetail.png!
+
+Le contenu de cette section peut être copié/collé, soit avec le menu contextuel du clic droit soit avec les raccourcis clavier habituels.
+
+!{width:70%}images/VueNormeDetailCC.png!
+
+Rappelons que l'arborescence et la section détail sont retaillables en hauteur, pour plus de détail l'utilisateur peut se référer au paragraphe précédent.
+
+h3. La vue individu
+
+La vue individu est personnalisée en fonction de la norme utilisée. Elle permet de visualiser la partie du message contrôlé relative à un élément de la norme qui représente un individu. Dans le cas de la DSN, ce sont les salariés qui représentent les individus.
+
+Cette vue se décompose en trois parties :
+* l'entête,
+* la table des rubriques et valeurs,
+* la partie détail de la rubrique.
+
+h4. L'entête
+
+L'entête affiche des informations concernant l'individu sélectionné jusqu'à un maximum de quatre informations. Ces informations dépendent de la norme utilisée par l'application.
+Dans le cas de la DSN, l'entête s'appelera "Salarié" et les informations affichées pour un individu sont les suivantes :
+* son nom,
+* son prénom,
+* son nom d'usage,
+* son NIR matricule.
+
+!{width:70%}images/VueSalarieEntete.png!
+
+h4. La table des rubriques et des valeurs
+
+Cette partie représente l’arborescence des blocs et rubriques de la norme avec les valeurs de l'individu sélectionné.
+
+!{width:70%}images/VueSalarieTable.png!
+
+Elle contient aussi un champ de recherche qui permet de filtrer les éléments de la norme à afficher. Les caractères joker comme "*" sont supportés par ce champs de recherche.
+Voici un exemple de cette table en filtrant sur "*nom" :
+
+!{width:70%}images/VueSalarieRecherche.png!
+
+Le champ de recherche bénéficie d'une "gomme" pour effacer tout le contenu de la recherche.
+
+!{width:70%}images/VueSalarieGomme.png!
+
+La table la section "Détails" sont retaillables en hauteur. Pour cela, il suffit de se positionner sur la "ligne" séparant les deux parties (encadrée en rouge dans la figure ci-dessous) et de la glisser/déposer à l'endroit souhaité.
+
+!{width:70%}images/VueSalarieRetail.png!
+
+h4. Les détails
+
+Cette section récapitule la description et les valeurs des rubriques ou blocs sélectionnés dans la table.
+
+!{width:70%}images/VueSalarieDetail.png!
+
+Le contenu de cette section peut être copié/collé, soit avec le menu contextuel du clic droit soit avec les raccourcis clavier habituels
+
+!{width:70%}images/VueSalarieDetailCC.png!
+
+Rappelons que l'arborescence et la section détail sont retaillables en hauteur, pour plus de détail l'utilisateur peut se référer au paragraphe précédent.
+
+h3. La synchronisation entre les vuess
+
+C'est la vue principale qui pilote la synchronisation entre les différentes vues. Lorsqu'une anomalie est sélectionnée dans la table de la vue principale :
+- si la vue norme est ouverte : la rubrique correspondant à l'anomalie est sélectionnée dans cette vue,
+- si la vue individu est ouverte et que l'anomalie est liée à un individu : la rubrique correspondant à l'anomalie est sélectionnée dans cette vue.
+
+!{width:70%}images/SynchroVues.png!
+
+A partir de la vue individu, la sélection d'une rubrique associée à une anomalie provoque :
+- la sélection de l'anomalie dans la table de la vue principale,
+- si la vue norme est ouverte : la rubrique correspondant à l'anomalie est sélectionnée dans cette vue.
+
+
+h3. L'export du bilan de contrôle
+
+Le bilan de validation peut être enregistré sous n'importe quel format proposé par la norme utilisée. Dans le cas de la DSN, les formats proposés sont html et xml. Lorsque l'on clique sur le bouton !../icons/export32.png! de la barre d'outils, une nouvelle fenêtre apparaît et permet de choisir :
+* le chemin et le nom du fichier qui va être enregistré,
+* le format du bilan qui va être enregistré.
+
+!{width:50%}images/ExportFenetre.png!
+
+Par défaut, l'enregistrement se fait à côté du message d'entrée. Le nom de l'export est le même que le message d'entrée et le format par défaut est le xml.
+
+Pour changer le répertoire d'enregistrement, il suffit de cliquer sur le bouton "Parcourir" et la fenêtre de sélection de fichier apparaît :
+!{width:50%}images/ExportParcourir.png!
+
+Lors du changement de format avec la boite de choix, l'extension du fichier change automatiquement. Par exemple, si par défaut le fichier est "d:/monFichier.dsn.xml", si l'on change le format d'enregistrement en "html", le nom du fichier se transforme en "d:/monFichier.dsn.html.
+
+!{width:50%}images/ExportFormat.png!
+Voici un exemple de génération html que la DSN propose. Il possède un entête récapitulant les informations générales du contrôle puis :
+* une liste des anomalies de type envoi,
+* pour chaque déclaration :
+** une liste des anomalies qui ne sont pas liées à un salarié,
+** pour chaque salarié en anomalie, une liste de ses anomalies.
+
+!{width:70%}images/ExportHtml.png!
+
+Et un exemple de génération xml, ce format reflète la structure du bilan de contrôle renvoyé par la brique de validation.
+!{width:70%}images/ExportXml.png!
+
+h3. La modification des préférences
+
+Les préférences sont accessibles depuis la barre d'outils !../icons/config32.png! et permettent de modifier le nombre maximal d'anomalies que le bilan peut prendre en compte, l'activation de la mutualisation des anomalies, l'activation de la mise à jour de la norme au démarrage et le réglage d'accès au réseau à travers un proxy.
+
+!{width:40%}images/Parameters.png!
+
+Par défaut, le nombre maximal d'anomalies est à 200. Il est modifiable soit textuellement, soit à l'aide des flèches "haut" et "bas".
+Si ce paramètre est valorisé à -1 alors aucune limite ne sera appliquée sur le nombre d'anomalies réstituées lors de la validation.
+
+Par défaut, la mutualisation est désactivée (valeur à -1). La configuration de ce paramètre avec une valeur différente de -1 provoque l'activation de la mutualisation sur les validations futures.
+
+!{width:60%}images/VuePrincipaleMutualisation.png!
+Par défaut, la mise à jour de la norme au démarrage est désactivée.
+
+Pour la confguration du proxy, le bouton "..." donne accès à la fenêtre qui permet sa configuration : 
+
+!{width:30%}images/ProxyConf.png!
+
+h3. La paramétrisation de la validation
+
+Le comportement de la validation avec l'autoContrôle peut être paramétré via le fichier "Autocontrol-Validateur.ini". Pour chaque paramètre que l'on veut spécifier, il faut ajouter sa ligne à la fin du fichier "ini". La liste des paramètres est la suivante :
+
+table{border:1px solid black}.
+{background:#ddd}.|_. Nom du paramètre |_. Valeur par défaut |_. Valeurs autorisées |_. Description |
+{background:#ddd}.| -Dstop.on.syntactic.error | false | "true", "false" | Si la propriété est renseignée à la valeur « true » alors la validation est interrompue après la validation syntaxique en cas d’anomalies syntaxiques. |
+{background:#ddd}.| -Dstop.on.conversion.error | false | "true", "false" | Si la propriété est renseignée à la valeur « true » alors la validation est interrompue après la conversion en cas d’anomalies lors de la conversion. |
+{background:#ddd}.| -Dfr.cnav.norme.val.anomaliesInhibiting | true | "true", "false" | Lorsque cette propriété est à « true », les anomalies sémantiques secondaires générées à cause d’une autre anomalie primaire sont filtrées du rapport de validation |
+
+h3. La mise à jour de l'outil
+
+La vérification des mises à jour de la norme utilisée se fait grâce au bouton !../icons/update32.png! de la barre d'outils.
+Si aucune mise à jour n'est disponible, une fenêtre informe que l'outil est à jour.
+!{width:30%}images/MAJDejaAJour.png!
+
+Si une mise à jour est disponible, une fenêtre apparaît et propose à l'utilisateur d'installer ou non cette mise à jour.
+!{width:30%}images/MAJQuestion.png!
+
+Si oui, la mise à jour est téléchargée. Une fois le processus fini, un message informe l'utilisateur que l'outil va redémarrer pour prendre en compte les changements.
+
+!{width:30%}images/MAJRedemarrage.png!
+
+Si le site de mises à jour a besoin d'être modifié, cela est possible en modifiant le fichier "Autocontrol-Validateur.ini" et en remplaçant le paramètre "fr.cnav.autocontrole.updatesite.loc" par sa nouvelle valeur.
+Par exemple, -Dfr.cnav.autocontrole.updatesite.loc=http://dsnval.cnav.update .
