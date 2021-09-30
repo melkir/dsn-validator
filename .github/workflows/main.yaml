@@ -1,0 +1,54 @@
+
+name: Update validator
+on:
+  schedule:
+    - cron: "30 7 * * 1,2,3,4,5"
+  workflow_dispatch:
+    inputs: {}
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Checks for updates
+        run: |
+          res=$(curl --silent https://net-entreprise-api.deno.dev/)
+          version=$(jq -r '.version' <<< $res)
+          date=$(jq -r '.date' <<< $res)
+          rel_date=$(tr -d '-' <<< $date)
+          rel_build=$((cut -d '.' -f 2,3,4 | tr -d '.') <<< $version)
+          branch="vendor/validator-${rel_date}${rel_build}"
+          folder="client/${branch}"
+          remote_count=$(git ls-remote --heads origin ${branch} | wc -l)
+          if [[ -d ${folder} ]] || [[ ${remote_count} -gt 0 ]]
+          then
+              echo "The tool is up-to-date." 
+          else
+              echo "A new version of the tool is available."
+              title="chore(deps): update validator to v${version}"
+              url=$(jq -r '.url' <<< $res)
+              echo "title=${title}" >> $GITHUB_ENV
+              echo "url=${url}" >> $GITHUB_ENV
+              echo "branch=${branch}" >> $GITHUB_ENV
+              echo "folder=${folder}" >> $GITHUB_ENV
+              echo "has_upgrade=true" >> $GITHUB_ENV
+          fi
+      - name: Upgrading vendors
+        if: ${{ env.has_upgrade == 'true' }}
+        run: |
+          mkdir -p ${{ env.folder }}
+          echo "==> Downloading ${{ env.url }}"
+          curl ${{ env.url }} | tar -xf- -C ${{ env.folder }}
+          cd ${{ env.folder }}
+          chmod +x Autocontrol-Validateur Autocontrol-ValidateurModeBatchLinux64.sh
+      - name: Create Pull Request
+        if: ${{ env.has_upgrade == 'true' }}
+        uses: peter-evans/create-pull-request@v3
+        with:
+          labels: dependencies
+          title: ${{ env.title }}
+          branch: ${{ env.branch }}
+          commit-message: ${{ env.title }}
