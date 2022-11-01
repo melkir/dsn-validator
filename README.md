@@ -4,8 +4,8 @@
 
 ```
 docker pull contribsys/faktory
-docker build -t client client/
-docker build -t server server/
+docker build --platform=linux/arm64 -t client client/
+docker build --platform=linux/arm64 -t server server/
 ```
 
 ### Run
