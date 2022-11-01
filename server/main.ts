@@ -2,11 +2,8 @@ import {
   copy,
   FaktoryClient,
   FaktoryJob,
-  listenAndServe,
   readerFromStreamReader,
 } from "./deps.ts";
-
-const addr = ":8080";
 
 const client = new FaktoryClient(
   Deno.env.get("FAKTORY_HOST") || "localhost",
@@ -27,33 +24,53 @@ async function upload(file: File) {
   return { dir: tmpDirectory, path: tmpFilePath };
 }
 
-const handler = async (request: Request): Promise<Response> => {
-  const url = new URL(request.url);
+// Start listening on port 8080 of localhost.
+const server = Deno.listen({ port: 8080 });
+console.log(`HTTP webserver running.  Access it at:  http://localhost:8080/`);
 
-  if (url.pathname === "/upload") {
-    const formData = await request.formData();
-    const file = formData.get("file") as File;
-    const tmpFile = await upload(file);
-    const job = new FaktoryJob("validate", [tmpFile]);
-    await client.push(job);
+// Connections to the server will be yielded up as an async iterable.
+for await (const conn of server) {
+  // In order to not be blocking, we need to handle each connection individually
+  // without awaiting the function
+  serveHttp(conn);
+}
 
-    return new Response(JSON.stringify(job), {
-      headers: new Headers({ "Content-Type": "application/json" }),
-    });
+async function serveHttp(conn: Deno.Conn) {
+  // This "upgrades" a network connection into an HTTP connection.
+  const httpConn = Deno.serveHttp(conn);
+  // Each request sent over the HTTP connection will be yielded as an async
+  // iterator from the HTTP connection.
+  for await (const { request, respondWith } of httpConn) {
+    const url = new URL(request.url);
+
+    if (url.pathname === "/upload") {
+      const formData = await request.formData();
+      const file = formData.get("file") as File;
+      const tmpFile = await upload(file);
+      const job = new FaktoryJob("validate", [tmpFile]);
+      await client.push(job);
+
+      return respondWith(
+        new Response(JSON.stringify(job), {
+          headers: new Headers({ "Content-Type": "application/json" }),
+        }),
+      );
+    }
+    // The native HTTP server uses the web standard `Request` and `Response`
+    // objects.
+    const body = `
+      <form action="/upload" enctype="multipart/form-data" method="post">
+        <div><input type="file" name="file"/></div>
+        <input type="submit" value="Upload" />
+      </form>
+    `;
+    // The requestEvent's `.respondWith()` method is how we send the response
+    // back to the client.
+    respondWith(
+      new Response(body, {
+        status: 200,
+        headers: new Headers({ "Content-Type": "text/html; charset=utf-8" }),
+      }),
+    );
   }
-
-  const body = `
-    <form action="/upload" enctype="multipart/form-data" method="post">
-      <div><input type="file" name="file"/></div>
-      <input type="submit" value="Upload" />
-    </form>
-  `;
-
-  return new Response(body, {
-    status: 200,
-    headers: new Headers({ "Content-Type": "text/html; charset=utf-8" }),
-  });
-};
-
-console.log(`Listening on http://localhost${addr}`);
-await listenAndServe(addr, handler);
+}

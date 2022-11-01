@@ -1,8 +1,7 @@
-export { listenAndServe } from "https://deno.land/std@0.109.0/http/server.ts";
 export {
   copy,
   readerFromStreamReader,
-} from "https://deno.land/std@0.109.0/io/mod.ts";
+} from "https://deno.land/std@0.161.0/streams/mod.ts";
 export {
   FaktoryClient,
   FaktoryJob,
