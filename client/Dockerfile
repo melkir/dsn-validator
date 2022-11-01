@@ -14,4 +14,4 @@ ADD . .
 # Compile the main app so that it doesn't need to be compiled each startup/entry.
 RUN deno cache --unstable main.ts
 
-CMD ["run", "--allow-read", "--allow-write", "--allow-run", "--allow-net", "--allow-env", "--unstable", "main.ts"]
+CMD ["run", "--allow-read", "--allow-write", "--allow-run", "--allow-net", "--allow-env", "--allow-sys", "--unstable", "main.ts"]

@@ -1,14 +1,10 @@
-import {
-  copy,
-  FaktoryClient,
-  FaktoryJob,
-  readerFromStreamReader,
-} from "./deps.ts";
+import { copy, FaktoryClient, readerFromStreamReader } from "./deps.ts";
 
-const client = new FaktoryClient(
-  Deno.env.get("FAKTORY_HOST") || "localhost",
-  7419,
-);
+const client = new FaktoryClient({
+  host: Deno.env.get("FAKTORY_HOST") || "localhost",
+  port: 7419,
+});
+
 await client.connect();
 
 async function upload(file: File) {
@@ -47,8 +43,8 @@ async function serveHttp(conn: Deno.Conn) {
       const formData = await request.formData();
       const file = formData.get("file") as File;
       const tmpFile = await upload(file);
-      const job = new FaktoryJob("validate", [tmpFile]);
-      await client.push(job);
+      const job = client.job("validate", tmpFile);
+      await job.push();
 
       return respondWith(
         new Response(JSON.stringify(job), {

@@ -13,8 +13,8 @@ RUN deno cache deps.ts
 # These steps will be re-run upon each file change in your working directory:
 ADD . .
 # Compile the main app so that it doesn't need to be compiled each startup/entry.
-RUN deno cache main.ts
+RUN deno cache --unstable main.ts
 
 EXPOSE 8080
 
-CMD ["run", "--allow-net", "--allow-write", "--allow-env", "main.ts"]
+CMD ["run", "--allow-net", "--allow-write", "--allow-env", "--allow-sys", "--unstable", "main.ts"]

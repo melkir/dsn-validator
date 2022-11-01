@@ -1,16 +1,14 @@
-import { FaktoryClient, FaktoryWorker } from "./deps.ts";
+import { FaktoryWorker } from "./deps.ts";
 import { Validator } from "./validator.ts";
 
 const PORT = 7419;
-const client = new FaktoryClient(
-  Deno.env.get("FAKTORY_HOST") || "localhost",
-  PORT,
-);
-await client.connect();
+const worker = new FaktoryWorker({
+  host: Deno.env.get("FAKTORY_HOST") || "localhost",
+  port: PORT,
+});
 
 console.log(`Listening on http://localhost:${PORT}`);
 
-const worker = new FaktoryWorker(client);
 const validator = new Validator({ version: "validator-202106231017" });
 
 interface JobParams {
@@ -18,10 +16,15 @@ interface JobParams {
   path: string;
 }
 
-worker.register("validate", async (job: [JobParams]) => {
+worker.register("validate", async (job) => {
   console.log(job);
-  const xml = await validator.run(job[0]);
+  const xml = await validator.run(job as JobParams);
   console.log(xml.length);
 });
 
-await worker.run(true);
+try {
+  await worker.work();
+} catch (error: unknown) {
+  console.error(`worker failed to start: ${error}`);
+  Deno.exit(1);
+}
